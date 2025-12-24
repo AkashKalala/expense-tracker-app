@@ -16,5 +16,3 @@ build/
 .vscode/*
 !.vscode/settings.json
 
-# Git
-.gitkeep
