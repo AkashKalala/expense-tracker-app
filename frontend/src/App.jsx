@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getExpenses, createExpense } from "./services/api";
+import ExpenseForm from "./components/ExpenseForm";
 
 function App() {
   const [expenses, setExpenses] = useState([]);
@@ -13,16 +14,8 @@ function App() {
     setExpenses(data);
   }
 
-  async function handleAddExpense() {
-    await createExpense({
-      expense_date: "2025-01-10",
-      category: "Food",
-      amount: 150,
-      sub_category: "Swiggy",
-      description: "Lunch",
-      payment_mode: "UPI",
-    });
-
+  async function addExpense(expense) {
+    await createExpense(expense);
     loadExpenses();
   }
 
@@ -30,9 +23,7 @@ function App() {
     <div style={{ padding: 20 }}>
       <h1>Expense Tracker</h1>
 
-      <button onClick={handleAddExpense}>
-        Add Sample Expense
-      </button>
+      <ExpenseForm onAdd={addExpense} />
 
       <ul>
         {expenses.map((exp) => (
