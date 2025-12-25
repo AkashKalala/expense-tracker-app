@@ -8,6 +8,9 @@ from fastapi import HTTPException
 from app.db.deps import get_db
 from app.models.expense import Expense
 from app.api.schemas import ExpenseCreate
+from app.api.deps import get_current_user
+from app.models.user import User
+
 
 
 router = APIRouter(prefix="/expenses", tags=["Expenses"])
@@ -15,7 +18,8 @@ router = APIRouter(prefix="/expenses", tags=["Expenses"])
 @router.post("")
 def create_expense(
     expense: ExpenseCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     new_expense = Expense(
         date=expense.expense_date,
@@ -23,7 +27,8 @@ def create_expense(
         sub_category=expense.sub_category,
         description=expense.description,
         amount=expense.amount,
-        payment_mode=expense.payment_mode
+        payment_mode=expense.payment_mode,
+        user_id=current_user.id
     )
 
     db.add(new_expense)
@@ -33,21 +38,18 @@ def create_expense(
     return new_expense
 
 
+
 @router.get("")
 def list_expenses(
-    category: Optional[str] = None,
-    payment_mode: Optional[str] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    query = db.query(Expense)
+    return (
+        db.query(Expense)
+        .filter(Expense.user_id == current_user.id)
+        .all()
+    )
 
-    if category:
-        query = query.filter(Expense.category == category)
-
-    if payment_mode:
-        query = query.filter(Expense.payment_mode == payment_mode)
-
-    return query.all()
 
 @router.put("/{expense_id}")
 def update_expense(
@@ -59,6 +61,10 @@ def update_expense(
 
     if not db_expense:
         raise HTTPException(status_code=404, detail="Expense not found")
+
+    if db_expense.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
 
     db_expense.date = expense.expense_date
     db_expense.category = expense.category
@@ -81,6 +87,10 @@ def delete_expense(
 
     if not db_expense:
         raise HTTPException(status_code=404, detail="Expense not found")
+    
+    if db_expense.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
 
     db.delete(db_expense)
     db.commit()

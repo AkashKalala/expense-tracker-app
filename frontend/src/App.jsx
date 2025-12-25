@@ -1,18 +1,25 @@
 import { useEffect, useState } from "react";
-import { getExpenses, createExpense } from "./services/api";
+import { getExpenses, createExpense, deleteExpense, updateExpense } from "./services/api";
 import ExpenseForm from "./components/ExpenseForm";
-import { deleteExpense } from "./services/api";
-
+import Login from "./components/Login";
+import Register from "./components/Register";
 
 function App() {
   const [expenses, setExpenses] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editAmount, setEditAmount] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    Boolean(localStorage.getItem("token"))
+  );
+  const [authMode, setAuthMode] = useState("login");
+
 
 
   useEffect(() => {
-    loadExpenses();
-  }, []);
+    if (isAuthenticated) {
+      loadExpenses();
+    }
+  }, [isAuthenticated]);
 
   async function loadExpenses() {
     const data = await getExpenses();
@@ -24,11 +31,36 @@ function App() {
     loadExpenses();
   }
 
+  if (!isAuthenticated) {
+    return authMode === "login" ? (
+      <Login
+        onLogin={() => setIsAuthenticated(true)}
+        onSwitchToRegister={() => setAuthMode("register")}
+      />
+    ) : (
+      <Register
+        onSwitchToLogin={() => setAuthMode("login")}
+      />
+    );
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+  }
+
+
   return (
-    <div style={{ padding: 20 }}>
-      <h1 className="text-4xl font-extrabold text-purple-600 bg-yellow-200 p-4">
-        Expense Tracker
-      </h1>
+    <div className="max-w-xl mx-auto p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Expense Tracker</h1>
+        <button
+          onClick={handleLogout}
+          className="text-sm text-red-600 hover:underline"
+        >
+          Logout
+        </button>
+      </div>
 
       <ExpenseForm onAdd={addExpense} />
 
@@ -98,8 +130,6 @@ function App() {
           </li>
         ))}
       </ul>
-
-
     </div>
   );
 }

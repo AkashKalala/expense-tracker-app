@@ -42,6 +42,12 @@ function ExpenseForm({ onAdd }) {
     className="bg-white shadow rounded p-4 mb-6 space-y-3"
   >
     <h3 className="text-lg font-semibold">Add Expense</h3>
+    <button
+      onClick={handleLogout}
+      className="text-sm text-red-600 hover:underline mb-4"
+    >
+      Logout
+    </button>
 
     <div className="grid grid-cols-2 gap-3">
       <input

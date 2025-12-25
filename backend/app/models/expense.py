@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Date
+from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
+from sqlalchemy.orm import relationship
 from app.db.base import Base
 
 class Expense(Base):
@@ -11,3 +12,5 @@ class Expense(Base):
     description = Column(String, nullable=True)
     amount = Column(Float, nullable=False)
     payment_mode = Column(String, nullable=True)
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)

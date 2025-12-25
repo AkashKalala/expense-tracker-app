@@ -1,25 +1,46 @@
 const BASE_URL = "http://127.0.0.1:8000";
 
+function authHeaders() {
+  const token = localStorage.getItem("token");
+  return token
+    ? { Authorization: `Bearer ${token}` }
+    : {};
+}
+
 export async function getExpenses() {
-  const response = await fetch(`${BASE_URL}/expenses`);
-  return response.json();
+  const res = await fetch(`${BASE_URL}/expenses`, {
+    headers: authHeaders(),
+  });
+
+  if (res.status === 401) {
+    localStorage.removeItem("token");
+    window.location.reload();
+    return [];
+  }
+
+  return res.json();
 }
 
 export async function createExpense(expense) {
-  const response = await fetch(`${BASE_URL}/expenses`, {
+  const res = await fetch(`${BASE_URL}/expenses`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      ...authHeaders(),
     },
     body: JSON.stringify(expense),
   });
 
-  return response.json();
+  return res.json();
 }
+
 
 export async function deleteExpense(id) {
   await fetch(`${BASE_URL}/expenses/${id}`, {
     method: "DELETE",
+    headers: {
+      ...getAuthHeaders(),
+    },
   });
 }
 
@@ -28,7 +49,33 @@ export async function updateExpense(id, expense) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeaders(),
     },
     body: JSON.stringify(expense),
   });
+}
+
+export async function login(email, password) {
+  const response = await fetch(`${BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  return response.json();
+}
+
+export async function register(email, password) {
+  const response = await fetch("http://127.0.0.1:8000/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.detail || "Registration failed");
+  }
+
+  return response.json();
 }

@@ -6,6 +6,7 @@ from app.api.health import router as health_router
 from app.db.session import engine
 from app.db.base import Base
 from app.models import expense
+from app.api.auth import router as auth_router
 from app.api.expenses import router as expense_router
 
 
@@ -26,4 +27,5 @@ app.add_middleware(
 )
 
 app.include_router(health_router)
+app.include_router(auth_router)
 app.include_router(expense_router)
