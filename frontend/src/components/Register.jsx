@@ -20,15 +20,10 @@ function Register({ onSwitchToLogin }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-sm mx-auto mt-20 p-6 bg-white shadow rounded space-y-3"
-    >
+    <form className="max-w-sm mx-auto mt-20 p-6 bg-white shadow rounded space-y-3" onSubmit={handleSubmit}>
       <h2 className="text-xl font-bold">Register</h2>
 
-      {error && (
-        <p className="text-red-500 text-sm">{error}</p>
-      )}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <input
         className="border p-2 w-full"
@@ -53,11 +48,7 @@ function Register({ onSwitchToLogin }) {
 
       <p className="text-sm text-center">
         Already have an account?{" "}
-        <button
-          type="button"
-          className="text-blue-600"
-          onClick={onSwitchToLogin}
-        >
+        <button type="button" className="text-blue-600" onClick={onSwitchToLogin}>
           Login
         </button>
       </p>

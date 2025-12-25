@@ -1,121 +1,68 @@
 import { useState } from "react";
 
 function ExpenseForm({ onAdd }) {
-  const [formData, setFormData] = useState({
-    expense_date: "",
-    category: "",
-    amount: "",
-    sub_category: "",
-    description: "",
-    payment_mode: "",
-  });
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [date, setDate] = useState("");
 
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
-
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
 
-    await onAdd({
-      ...formData,
-      amount: Number(formData.amount),
+    onAdd({
+      amount: Number(amount),
+      category,
+      sub_category: subCategory,
+      expense_date: date,
+      payment_mode: "cash",
+      description: "",
     });
 
-    setFormData({
-      expense_date: "",
-      category: "",
-      amount: "",
-      sub_category: "",
-      description: "",
-      payment_mode: "",
-    });
+    setAmount("");
+    setCategory("");
+    setSubCategory("");
+    setDate("");
   }
 
   return (
-  <form
-    onSubmit={handleSubmit}
-    className="bg-white shadow rounded p-4 mb-6 space-y-3"
-  >
-    <h3 className="text-lg font-semibold">Add Expense</h3>
-    <button
-      onClick={handleLogout}
-      className="text-sm text-red-600 hover:underline mb-4"
-    >
-      Logout
-    </button>
-
-    <div className="grid grid-cols-2 gap-3">
-      <input
-        type="date"
-        name="expense_date"
-        value={formData.expense_date}
-        onChange={handleChange}
-        required
-        className="border rounded p-2"
-      />
-
-      <input
-        type="text"
-        name="category"
-        placeholder="Category"
-        value={formData.category}
-        onChange={handleChange}
-        required
-        className="border rounded p-2"
-      />
-
+    <form onSubmit={handleSubmit} className="space-y-3 mb-6">
       <input
         type="number"
-        name="amount"
         placeholder="Amount"
-        value={formData.amount}
-        onChange={handleChange}
+        className="border p-2 w-full"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
         required
-        className="border rounded p-2"
       />
 
       <input
-        type="text"
-        name="payment_mode"
-        placeholder="Payment Mode"
-        value={formData.payment_mode}
-        onChange={handleChange}
-        className="border rounded p-2"
+        placeholder="Category"
+        className="border p-2 w-full"
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+        required
       />
-    </div>
 
-    <input
-      type="text"
-      name="sub_category"
-      placeholder="Sub-category"
-      value={formData.sub_category}
-      onChange={handleChange}
-      className="border rounded p-2 w-full"
-    />
+      <input
+        placeholder="Sub Category"
+        className="border p-2 w-full"
+        value={subCategory}
+        onChange={(e) => setSubCategory(e.target.value)}
+      />
 
-    <input
-      type="text"
-      name="description"
-      placeholder="Description"
-      value={formData.description}
-      onChange={handleChange}
-      className="border rounded p-2 w-full"
-    />
+      <input
+        type="date"
+        className="border p-2 w-full"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        required
+      />
 
-    <button
-      type="submit"
-      className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
-    >
-      Add Expense
-    </button>
-  </form>
-);
-
+      <button className="bg-purple-600 text-white px-4 py-2 rounded">
+        Add Expense
+      </button>
+    </form>
+  );
 }
 
 export default ExpenseForm;
