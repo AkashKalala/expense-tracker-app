@@ -37,15 +37,20 @@ function ExpenseForm({ onAdd }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
-      <h3>Add Expense</h3>
+  <form
+    onSubmit={handleSubmit}
+    className="bg-white shadow rounded p-4 mb-6 space-y-3"
+  >
+    <h3 className="text-lg font-semibold">Add Expense</h3>
 
+    <div className="grid grid-cols-2 gap-3">
       <input
         type="date"
         name="expense_date"
         value={formData.expense_date}
         onChange={handleChange}
         required
+        className="border rounded p-2"
       />
 
       <input
@@ -55,6 +60,7 @@ function ExpenseForm({ onAdd }) {
         value={formData.category}
         onChange={handleChange}
         required
+        className="border rounded p-2"
       />
 
       <input
@@ -64,14 +70,7 @@ function ExpenseForm({ onAdd }) {
         value={formData.amount}
         onChange={handleChange}
         required
-      />
-
-      <input
-        type="text"
-        name="sub_category"
-        placeholder="Sub-category"
-        value={formData.sub_category}
-        onChange={handleChange}
+        className="border rounded p-2"
       />
 
       <input
@@ -80,19 +79,37 @@ function ExpenseForm({ onAdd }) {
         placeholder="Payment Mode"
         value={formData.payment_mode}
         onChange={handleChange}
+        className="border rounded p-2"
       />
+    </div>
 
-      <input
-        type="text"
-        name="description"
-        placeholder="Description"
-        value={formData.description}
-        onChange={handleChange}
-      />
+    <input
+      type="text"
+      name="sub_category"
+      placeholder="Sub-category"
+      value={formData.sub_category}
+      onChange={handleChange}
+      className="border rounded p-2 w-full"
+    />
 
-      <button type="submit">Add</button>
-    </form>
-  );
+    <input
+      type="text"
+      name="description"
+      placeholder="Description"
+      value={formData.description}
+      onChange={handleChange}
+      className="border rounded p-2 w-full"
+    />
+
+    <button
+      type="submit"
+      className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+    >
+      Add Expense
+    </button>
+  </form>
+);
+
 }
 
 export default ExpenseForm;

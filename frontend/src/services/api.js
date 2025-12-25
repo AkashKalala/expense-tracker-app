@@ -16,3 +16,19 @@ export async function createExpense(expense) {
 
   return response.json();
 }
+
+export async function deleteExpense(id) {
+  await fetch(`${BASE_URL}/expenses/${id}`, {
+    method: "DELETE",
+  });
+}
+
+export async function updateExpense(id, expense) {
+  await fetch(`${BASE_URL}/expenses/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(expense),
+  });
+}
